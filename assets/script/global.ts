@@ -11,22 +11,11 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class Game extends cc.Component {
-    @property({
-        type: [cc.Prefab],
-        tooltip: "Data for ground."
-    })
-    groundData: cc.Prefab [] = [];
+export default class Global extends cc.Component {
 
-    @property({
-        type: [cc.Node],
-        tooltip: "node spawn ground."
-    })
-    spawnGroundNode: cc.Node [] = [];
     
-    onLoad () {
-        cc.director.getPhysicsManager().enabled = true;
-    }
+
+    onLoad () {}
 
     start () {
 

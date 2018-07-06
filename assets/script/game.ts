@@ -9,6 +9,8 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 const {ccclass, property} = cc._decorator;
+import GameMessage   from './game-messages'
+import EventManager from './event-manager'
 
 @ccclass
 export default class Game extends cc.Component {
@@ -23,9 +25,54 @@ export default class Game extends cc.Component {
         tooltip: "node spawn ground."
     })
     spawnGroundNode: cc.Node [] = [];
+
+    @property({
+        type: [cc.Node],
+        tooltip: "Lane touched."
+    })
+    limitLane: cc.Node [] = [];
+
+    currentLaneID: number = 1; // at starting game.
+    nextLaneID: number = -1; // touched lane.
     
     onLoad () {
         cc.director.getPhysicsManager().enabled = true;
+
+        this.node.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
+        this.node.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        this.node.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
+        this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+    }
+
+    getLaneTouched(pTouched: cc.Vec2): number
+    {
+        for(let iii = 0; iii < this.limitLane.length; ++ iii)
+        {
+            if(this.limitLane[iii].getBoundingBox().contains(pTouched))
+                return iii;
+        }
+
+        return -1;
+    }
+
+    onTouchMove(event: cc.Event.EventTouch) {
+    }
+
+    onTouchEnd(event: cc.Event.EventTouch) {
+        
+    }
+
+    onTouchCancel(event: cc.Event.EventTouch) {
+    }
+
+    onTouchStart(event: cc.Event.EventTouch) {
+        let touchP: cc.Vec2 = this.node.convertToNodeSpaceAR(event.getLocation());
+        let idLaneTouched: number = this.getLaneTouched(touchP);
+        cc.log(" Touch lane: " + idLaneTouched);
+        let characterPos: cc.Vec2 = this.node.getChildByName("character").position;
+        let convertVerticalPos: cc.Vec2 = cc.p(touchP.x, characterPos.y); // pos to come to
+        let dir = cc.pSub(convertVerticalPos, characterPos);
+        EventManager.instance.dispatch(GameMessage.CHARACTER_MOVE_ON_BY_TOUCH, convertVerticalPos, cc.pNormalize(dir));
     }
 
     start () {

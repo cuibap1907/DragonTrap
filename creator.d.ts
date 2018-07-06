@@ -14955,6 +14955,26 @@ declare module dragonBones {
 		@param armatureName armatureName 
 		*/
 		getAnimationNames(armatureName: string): any[];		
+				/**
+		!#en
+		Add event listener for the DragonBones Event.
+		!#zh
+		添加 DragonBones 事件监听器。
+		@param eventType eventType
+		@param listener listener
+		@param target target 
+		*/
+		addEventListener(eventType: EventStringType, listener: Function, target: any): void;		
+		/**
+		!#en
+		Remove the event listener for the DragonBones Event.
+		!#zh
+		移除 DragonBones 事件监听器。
+		@param eventType eventType
+		@param listener listener
+		@param target target 
+		*/
+		removeEventListener(eventType: EventStringType, listener: Function, target: any): void;		
 		/**
 		!#en
 		Add event listener for the DragonBones Event.

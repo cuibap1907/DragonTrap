@@ -13,7 +13,14 @@ const {ccclass, property} = cc._decorator;
 @ccclass
 export default class Global extends cc.Component {
 
-    
+    private static _instance: Global = null;
+
+    static get instance() {
+        if(Global._instance == null) {
+            Global._instance = new Global();
+        }
+        return Global._instance;
+    }
 
     onLoad () {}
 

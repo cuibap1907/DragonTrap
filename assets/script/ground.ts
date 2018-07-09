@@ -31,7 +31,7 @@ export default class Ground extends cc.Component {
     })
     displayTime: number = 3;
 
-    groundSpeed: number = 40;
+    groundSpeed: number = 60;
 
     onLoad () {}
 

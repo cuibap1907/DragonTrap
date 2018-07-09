@@ -57,12 +57,18 @@ export default class CharacterControll extends cc.Component {
         this.behavior.idleStatus();
     }
 
+    releaseAll()
+    {
+        this._moveFlags = -1;
+    }
+
 
     onTouchControl(newDir: cc.Vec2, moveTo: cc.Vec2, keyCode: number = -1)
     {
         cc.log("Called touch controll.");
         if(this.useKeyboard)
         {
+            this.limitPos = moveTo;
             switch(keyCode)
             {
                 case this.leftKey:
@@ -144,7 +150,7 @@ export default class CharacterControll extends cc.Component {
         {
             cc.log("GAME OVER.");
         }
-        
+
         let delta: number = 0;
         delta = this.speed * dt;
         if(delta > MAX_SPEED)
@@ -154,16 +160,30 @@ export default class CharacterControll extends cc.Component {
         {
             if(this._moveFlags == MOVE_LEFT)
             {
-                //if(this.node.x - delta > this.limitPos.x)
+                if(this.node.x - delta > this.limitPos.x)
                 {
                     this.node.x -= delta;
+                } else 
+                {
+                    //this.releaseAll();
+                    this.mcIdleState();
+                    cc.log("ko co chay duoc Left");
                 }
                 
             } else if(this._moveFlags == MOVE_RIGHT)
             {
-                //if(this.node.x + delta < this.limitPos.x)
+                if(this.node.x + delta < this.limitPos.x)
+                {
                     this.node.x += delta;
+                }
+                else
+                {
+                    //this.releaseAll();
+                    this.mcIdleState();
+                    cc.log("ko co chay duoc Right.");
+                }
             }
+
         } else {
             if (this.moveDir  && !this.canStopMovingMC())
             {

@@ -22,6 +22,9 @@ export default class Game extends cc.Component {
 
     currentLaneID: number = 1; // at starting game.
     nextLaneID: number = -1; // touched lane.
+
+    startTouch: cc.Vec2;
+    endTouch: cc.Vec2;
     
     onLoad () {
         cc.director.getPhysicsManager().enabled = true;
@@ -72,7 +75,7 @@ export default class Game extends cc.Component {
             cc.log("LEFT");
             keycodeTouched = cc.KEY.left;
         }
-        EventManager.instance.dispatch(GameMessage.CHARACTER_MOVE_ON_BY_TOUCH, convertVerticalPos, cc.pNormalize(dir), keycodeTouched);
+        EventManager.instance.dispatch(GameMessage.CHARACTER_MOVE_ON_BY_TOUCH, cc.pNormalize(dir), convertVerticalPos, keycodeTouched);
     }
 
     start () {

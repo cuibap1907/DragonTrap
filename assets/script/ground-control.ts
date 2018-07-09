@@ -55,7 +55,7 @@ export default class GroundControl extends cc.Component {
         cc.log("Len Ground:  " + lenGround);
         this.schedule(()=>{
             this.spawnGroundStep();
-        }, 7.0, 4);
+        }, 5.0, 4);
     }
 
     spawnGroundStep()

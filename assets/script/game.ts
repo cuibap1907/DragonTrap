@@ -50,7 +50,27 @@ export default class Game extends cc.Component {
     }
 
     onTouchEnd(event: cc.Event.EventTouch) {
+        let touchP: cc.Vec2 = this.node.convertToNodeSpaceAR(event.getLocation());
+        this.endTouch = touchP;
+        let dirSwipe = cc.pSub(this.endTouch, this.startTouch);
+        let deg = cc.radiansToDegrees(cc.pToAngle(dirSwipe));
+        let leng: number = Math.sqrt(Math.pow(dirSwipe.x, 2) + Math.pow(dirSwipe.y, 2));
+        cc.log("Goc: " + deg + "  leng:  " + leng);
+
+        if(leng >= 100) // this is swipe
+        {
+            if(deg > 0 && deg < 90)
+            {
+                // up - right
+            } else if(deg > 90 && deg < 180)
+            {
+                // up - left
+            }
+            return;
+        }
+
         
+        EventManager.instance.dispatch(GameMessage.CHARACTER_MOVE_OFF_BY_TOUCH);
     }
 
     onTouchCancel(event: cc.Event.EventTouch) {
@@ -58,6 +78,8 @@ export default class Game extends cc.Component {
 
     onTouchStart(event: cc.Event.EventTouch) {
         let touchP: cc.Vec2 = this.node.convertToNodeSpaceAR(event.getLocation());
+        this.startTouch = touchP;
+
         let idLaneTouched: number = this.getLaneTouched(touchP);
         //cc.log(" Touch lane: " + idLaneTouched);
         let characterPos: cc.Vec2 = this.node.getChildByName("character").position;
@@ -68,11 +90,11 @@ export default class Game extends cc.Component {
         if(touchP.x > characterPos.x)
         {
             keycodeTouched = cc.KEY.right;
-            cc.log("RIGHT");
+            //cc.log("RIGHT");
         }
         else if(touchP.x < characterPos.x)
         {
-            cc.log("LEFT");
+            //cc.log("LEFT");
             keycodeTouched = cc.KEY.left;
         }
         EventManager.instance.dispatch(GameMessage.CHARACTER_MOVE_ON_BY_TOUCH, cc.pNormalize(dir), convertVerticalPos, keycodeTouched);

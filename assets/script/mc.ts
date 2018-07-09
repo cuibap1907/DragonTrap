@@ -65,7 +65,8 @@ export default class CharacterControll extends cc.Component {
 
     onTouchControl(newDir: cc.Vec2, moveTo: cc.Vec2, keyCode: number = -1)
     {
-        cc.log("Called touch controll.");
+        //cc.log("Called touch controll.");
+        this.currentKeyCode = keyCode;
         if(this.useKeyboard)
         {
             this.limitPos = moveTo;
@@ -93,11 +94,11 @@ export default class CharacterControll extends cc.Component {
         }
     }
 
-    offTouchControl(keyCode)
+    offTouchControl()
     {
         if(this.useKeyboard)
         {
-            switch(keyCode)
+            switch(this.currentKeyCode)
             {
                 case this.leftKey:
                 {
@@ -112,10 +113,13 @@ export default class CharacterControll extends cc.Component {
                 }
             }
         } else {
-            cc.log("dung me no roi...........");
+            //cc.log("dung me no roi...........");
             this.moveDir = null;
             this.moveToPos = null;
         }
+
+        this.currentKeyCode = -1;
+        this.mcIdleState();
     }
 
     onKeyPressed(keyCode, event) {
@@ -134,6 +138,7 @@ export default class CharacterControll extends cc.Component {
     }
 
     moveDir: cc.Vec2;
+    currentKeyCode: number = -1;
     useKeyboard: boolean = true;
     moveOffX: number = 0.0;
     moveOffY: number = 0.0;
@@ -148,7 +153,7 @@ export default class CharacterControll extends cc.Component {
     update (dt) {
         if(this.node.y < -560)
         {
-            cc.log("GAME OVER.");
+            //cc.log("GAME OVER.");
         }
 
         let delta: number = 0;
@@ -160,28 +165,29 @@ export default class CharacterControll extends cc.Component {
         {
             if(this._moveFlags == MOVE_LEFT)
             {
-                if(this.node.x - delta > this.limitPos.x)
+                //if(this.node.x - delta > this.limitPos.x)
                 {
                     this.node.x -= delta;
-                } else 
-                {
-                    //this.releaseAll();
-                    this.mcIdleState();
-                    cc.log("ko co chay duoc Left");
-                }
+                } 
+                // else 
+                // {
+                //     //this.releaseAll();
+                //     this.mcIdleState();
+                //     //cc.log("ko co chay duoc Left");
+                // }
                 
             } else if(this._moveFlags == MOVE_RIGHT)
             {
-                if(this.node.x + delta < this.limitPos.x)
+                //if(this.node.x + delta < this.limitPos.x)
                 {
                     this.node.x += delta;
                 }
-                else
-                {
-                    //this.releaseAll();
-                    this.mcIdleState();
-                    cc.log("ko co chay duoc Right.");
-                }
+                // else
+                // {
+                //     //this.releaseAll();
+                //     this.mcIdleState();
+                //     //cc.log("ko co chay duoc Right.");
+                // }
             }
 
         } else {
@@ -194,6 +200,7 @@ export default class CharacterControll extends cc.Component {
                     this.node.x += this.moveOffX;
                     this.node.y += this.moveOffY;
                     let dir: cc.Vec2 = cc.pSub(this.moveToPos, this.node.position);
+                    
                     // let deg = cc.radiansToDegrees(cc.pToAngle(this.moveDir));    
                     // if (deg >= 45 && deg < 135) {
                     // } else if (deg >= 135 || deg < -135) {

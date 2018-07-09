@@ -103,8 +103,8 @@ export default class PlayerBehavior extends cc.Component {
 
     runStatus(isRight: boolean = false) {
         this.idling = false;
-        if(this.running)
-            return;
+        //if(this.running)
+        //    return;
         this.running = true;
         cc.log("Run     Anim Name is:  " + this.animName);
         switch(this.animName)
@@ -136,6 +136,7 @@ export default class PlayerBehavior extends cc.Component {
                 } else if(!isRight)
                 {
                     {
+                        cc.log("Chay qua trai.");
                         this.amatureSide.display.setRotationY(0);
                     }
                 }

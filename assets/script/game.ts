@@ -68,11 +68,23 @@ export default class Game extends cc.Component {
     onTouchStart(event: cc.Event.EventTouch) {
         let touchP: cc.Vec2 = this.node.convertToNodeSpaceAR(event.getLocation());
         let idLaneTouched: number = this.getLaneTouched(touchP);
-        cc.log(" Touch lane: " + idLaneTouched);
+        //cc.log(" Touch lane: " + idLaneTouched);
         let characterPos: cc.Vec2 = this.node.getChildByName("character").position;
         let convertVerticalPos: cc.Vec2 = cc.p(touchP.x, characterPos.y); // pos to come to
+        //cc.log("Touch: " + touchP + " character Pos: " + characterPos + " postogo: " + convertVerticalPos);
         let dir = cc.pSub(convertVerticalPos, characterPos);
-        EventManager.instance.dispatch(GameMessage.CHARACTER_MOVE_ON_BY_TOUCH, convertVerticalPos, cc.pNormalize(dir));
+        let keycodeTouched: number = -1;
+        if(touchP.x > characterPos.x)
+        {
+            keycodeTouched = cc.KEY.right;
+            cc.log("RIGHT");
+        }
+        else if(touchP.x < characterPos.x)
+        {
+            cc.log("LEFT");
+            keycodeTouched = cc.KEY.left;
+        }
+        EventManager.instance.dispatch(GameMessage.CHARACTER_MOVE_ON_BY_TOUCH, convertVerticalPos, cc.pNormalize(dir), keycodeTouched);
     }
 
     start () {

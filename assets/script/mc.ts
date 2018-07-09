@@ -18,7 +18,7 @@ const MOVE_LEFT     =   1;
 const MOVE_RIGHT    =   2;
 const MOVE_UP       =   3;
 const MOVE_DOWN     =   4;
-const MAX_SPEED     =   20;
+const MAX_SPEED     =   500;
 @ccclass
 export default class CharacterControll extends cc.Component {
 
@@ -26,10 +26,9 @@ export default class CharacterControll extends cc.Component {
         type: cc.Integer,
         tooltip: "speed of Main Character."
     })
-    speed: number = 30;
+    speed: number = 50;
 
     _moveFlags: number = 0;
-    _acceleration: number = 50;
 
     leftKey: any = cc.KEY.left;
     rightKey: any = cc.KEY.right;
@@ -39,50 +38,78 @@ export default class CharacterControll extends cc.Component {
     onLoad () {
         EventManager.instance.register(GameMessage.CHARACTER_MOVE_ON_BY_TOUCH, this.onTouchControl, this);
         EventManager.instance.register(GameMessage.CHARACTER_MOVE_OFF_BY_TOUCH, this.offTouchControl, this);
+        this.behavior = this.node.getComponent("player-behavior");
     }
 
     start () {
 
     }
 
-    onTouchControl(newDir: cc.Vec2, moveTo: cc.Vec2)
+    mcRunState(isRight: boolean = false)
     {
-        // switch(keyCode)
-        // {
-        //     case this.leftKey:
-        //     {
-        //         this._moveFlags |= MOVE_LEFT;
-        //         break;
-        //     }
+        this.behavior.setAnimName("Side");
+        this.behavior.runStatus(isRight);
+    }
 
-        //     case this.rightKey:
-        //     {
-        //         this._moveFlags |= MOVE_RIGHT;
-        //         break;
-        //     }
-        // }
-        this.moveDir = newDir;
-        this.moveToPos = moveTo;
+    mcIdleState()
+    {
+        this.behavior.setAnimName("Front");
+        this.behavior.idleStatus();
+    }
+
+
+    onTouchControl(newDir: cc.Vec2, moveTo: cc.Vec2, keyCode: number = -1)
+    {
+        cc.log("Called touch controll.");
+        if(this.useKeyboard)
+        {
+            switch(keyCode)
+            {
+                case this.leftKey:
+                {
+                    this._moveFlags &= ~MOVE_RIGHT;
+                    this._moveFlags |= MOVE_LEFT;
+                    this.mcRunState(false);
+                    break;
+                }
+
+                case this.rightKey:
+                {
+                    this._moveFlags &= ~MOVE_LEFT;
+                    this._moveFlags |= MOVE_RIGHT;
+                    this.mcRunState(true);
+                    break;
+                }
+            }
+        } else {
+            this.moveDir = newDir;
+            this.moveToPos = moveTo;
+        }
     }
 
     offTouchControl(keyCode)
     {
-        // switch(keyCode)
-        // {
-        //     case this.leftKey:
-        //     {
-        //         this._moveFlags &= ~MOVE_LEFT;
-        //         break;
-        //     }
+        if(this.useKeyboard)
+        {
+            switch(keyCode)
+            {
+                case this.leftKey:
+                {
+                    this._moveFlags &= ~MOVE_LEFT;
+                    break;
+                }
 
-        //     case this.rightKey:
-        //     {
-        //         this._moveFlags &= ~MOVE_RIGHT;
-        //         break;
-        //     }
-        // }
-        this.moveDir = null;
-        this.moveToPos = null;
+                case this.rightKey:
+                {
+                    this._moveFlags &= ~MOVE_RIGHT;
+                    break;
+                }
+            }
+        } else {
+            cc.log("dung me no roi...........");
+            this.moveDir = null;
+            this.moveToPos = null;
+        }
     }
 
     onKeyPressed(keyCode, event) {
@@ -101,7 +128,7 @@ export default class CharacterControll extends cc.Component {
     }
 
     moveDir: cc.Vec2;
-    useKeyboard: boolean = false;
+    useKeyboard: boolean = true;
     moveOffX: number = 0.0;
     moveOffY: number = 0.0;
     limitPos: cc.Vec2;
@@ -114,7 +141,7 @@ export default class CharacterControll extends cc.Component {
 
     update (dt) {
         let delta: number = 0;
-        delta = this._acceleration * dt;
+        delta = this.speed * dt;
         if(delta > MAX_SPEED)
             delta = MAX_SPEED;
         
@@ -135,14 +162,19 @@ export default class CharacterControll extends cc.Component {
         } else {
             if (this.moveDir  && !this.canStopMovingMC())
             {
-                this.moveOffX = this._acceleration * this.moveDir.x * dt;
-                this.moveOffY = this._acceleration * this.moveDir.y * dt;
+                this.moveOffX = this.speed * this.moveDir.x * dt;
+                this.moveOffY = this.speed * this.moveDir.y * dt;
                 //if(!this.isGoingOutside(cc.p(this.moveOffX, this.moveOffY))) // will not go out limit.
                 {
                     this.node.x += this.moveOffX;
                     this.node.y += this.moveOffY;
                     let dir: cc.Vec2 = cc.pSub(this.moveToPos, this.node.position);
-                    let deg = cc.radiansToDegrees(cc.pToAngle(this.moveDir));                    
+                    // let deg = cc.radiansToDegrees(cc.pToAngle(this.moveDir));    
+                    // if (deg >= 45 && deg < 135) {
+                    // } else if (deg >= 135 || deg < -135) {
+                    // } else if (deg >= -45 && deg < 45) {
+                    // } else {
+                    // }                
                     this.updateNewDir(cc.pNormalize(dir));
                 } 
             } 

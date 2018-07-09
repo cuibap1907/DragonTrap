@@ -140,6 +140,11 @@ export default class CharacterControll extends cc.Component {
     }
 
     update (dt) {
+        if(this.node.y < -560)
+        {
+            cc.log("GAME OVER.");
+        }
+        
         let delta: number = 0;
         delta = this.speed * dt;
         if(delta > MAX_SPEED)

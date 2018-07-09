@@ -15,18 +15,6 @@ import EventManager from './event-manager'
 @ccclass
 export default class Game extends cc.Component {
     @property({
-        type: [cc.Prefab],
-        tooltip: "Data for ground."
-    })
-    groundData: cc.Prefab [] = [];
-
-    @property({
-        type: [cc.Node],
-        tooltip: "node spawn ground."
-    })
-    spawnGroundNode: cc.Node [] = [];
-
-    @property({
         type: [cc.Node],
         tooltip: "Lane touched."
     })

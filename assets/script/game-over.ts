@@ -9,31 +9,22 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 const {ccclass, property} = cc._decorator;
+import Global from './global'
 
 @ccclass
-export default class Global extends cc.Component {
+export default class GameOver extends cc.Component {
 
-    private static _instance: Global = null;
-
-    static get instance() {
-        if(Global._instance == null) {
-            Global._instance = new Global();
-        }
-        return Global._instance;
-    }
-
-    useKeyboard: boolean = true;
-    isGameOver: boolean = false;
-
-
-    onLoad () {
-        cc.log("Global onload: " + this.useKeyboard);
-        this.isGameOver = false;
-    }
+    onLoad () {}
 
     start () {
 
     }
 
     update (dt) {}
+
+    onCloseGameOver()
+    {
+        Global.instance.isGameOver = false;
+        cc.director.loadScene("game");
+    }
 }

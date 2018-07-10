@@ -1,3 +1,5 @@
+import Global from "./global";
+
 // Learn TypeScript:
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
@@ -65,6 +67,11 @@ export default class GroundControl extends cc.Component {
     {
         this.stepGround ++; // next floor.
         cc.log("Floor:  " + this.stepGround);
+        if(Global.instance.isGameOver)
+        {
+            this.unscheduleAllCallbacks();
+            return;
+        }
 
         let idGroundLane1: number = this.GROUND_DATA[this.stepGround][0];
         if(idGroundLane1 != -1)
@@ -101,6 +108,11 @@ export default class GroundControl extends cc.Component {
 
     start () {
 
+    }
+
+    onDestroy()
+    {
+        //EventManager.instance.unregisterTarget(this);
     }
 
     // update (dt) {}

@@ -22,6 +22,18 @@ export default class Game extends cc.Component {
     })
     limitLane: cc.Node [] = [];
 
+    @property({
+        type: cc.Node,
+        tooltip: "Position to display game over menu."
+    })
+    gameoverNode: cc.Node = null;
+
+    @property({
+        type: cc.Prefab,
+        tooltip: "Menu data for game over"
+    })
+    gameoverData: cc.Prefab = null;
+
     currentLaneID: number = 1; // at starting game.
     nextLaneID: number = -1; // touched lane.
 
@@ -37,6 +49,15 @@ export default class Game extends cc.Component {
         this.node.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
         this.node.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+        EventManager.instance.register(GameMessage.GAME_OVER_STATE, this.onGameOver, this);
+        Global.instance.isGameOver = false;
+    }
+
+    onGameOver()
+    {
+        Global.instance.isGameOver = true;
+        let overNode: cc.Node = cc.instantiate(this.gameoverData);
+        this.gameoverNode.addChild(overNode);
     }
 
     getLaneTouched(pTouched: cc.Vec2): number
@@ -125,5 +146,10 @@ export default class Game extends cc.Component {
     onPauseGame()
     {
         cc.director.pause();
+    }
+
+    onDestroy()
+    {
+        EventManager.instance.unregisterTarget(this);
     }
 }

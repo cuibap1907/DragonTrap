@@ -275,9 +275,15 @@ export default class CharacterControll extends cc.Component {
 
     update (dt) {
         var speed = this.body.linearVelocity;
-        if(this.node.y < -560)
+
+        if(Global.instance.isGameOver)
+            return;
+
+        if(this.node.y < -560 || this.node.y > 420)
         {
-            //cc.log("GAME OVER.");
+            cc.log("GAME OVER.");
+            EventManager.instance.dispatch(GameMessage.GAME_OVER_STATE);
+            return;
         }
 
         let delta: number = 0;
@@ -375,5 +381,10 @@ export default class CharacterControll extends cc.Component {
         if(Math.abs(offX) < 2 && Math.abs(offY) < 2) // cheat to stop MC, because animation will change position of MC. It's hard to check to destination or not (moveDir not null)
             return true;
         return bStop;
+    }
+
+    onDestroy()
+    {
+        EventManager.instance.unregisterTarget(this);
     }
 }

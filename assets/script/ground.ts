@@ -9,6 +9,7 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 const {ccclass, property} = cc._decorator;
+import Global from './global'
 
 export enum GROUNDTYPE {
     AUTO_HIDE_GROUND    =   0,
@@ -35,7 +36,7 @@ export default class Ground extends cc.Component {
 
     onLoad () 
     {
-                
+
     }
 
     start () {
@@ -50,6 +51,9 @@ export default class Ground extends cc.Component {
     }
 
     update (dt) {
+        if(Global.instance.isGameOver)
+            return;
+            
         this.node.y += this.groundSpeed * dt;
         if(this.outOfScreen())
         {

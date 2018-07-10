@@ -104,7 +104,7 @@
     },
     "_enabled": true,
     "groundType": 1,
-    "displayTime": -1
+    "displayTime": 1
   },
   {
     "__type__": "cc.RigidBody",
@@ -126,7 +126,7 @@
     },
     "_angularVelocity": 0,
     "_fixedRotation": false,
-    "enabledContactListener": false,
+    "enabledContactListener": true,
     "bullet": false
   },
   {

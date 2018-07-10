@@ -22,7 +22,12 @@ export default class Global extends cc.Component {
         return Global._instance;
     }
 
-    onLoad () {}
+    useKeyboard: boolean = true;
+
+
+    onLoad () {
+        cc.log("Global onload: " + this.useKeyboard);
+    }
 
     start () {
 

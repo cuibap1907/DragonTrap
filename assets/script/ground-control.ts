@@ -44,7 +44,10 @@ export default class GroundControl extends cc.Component {
                                  [1, 0, 1],
                                  [2, -1, 0],
                                  [-1, 1, 1],
-                                 [0, 1, -1]
+                                 [0, 1, -1],
+                                 [2, 1, -1],
+                                 [-1, -1, 1],
+                                 [-1, 2, 1]
                                 ];
 
     prevLane: number = -1;
@@ -55,7 +58,7 @@ export default class GroundControl extends cc.Component {
         cc.log("Len Ground:  " + lenGround);
         this.schedule(()=>{
             this.spawnGroundStep();
-        }, 5.0, 4);
+        }, 3.0, lenGround - 1);
     }
 
     spawnGroundStep()

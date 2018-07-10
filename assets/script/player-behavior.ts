@@ -40,11 +40,9 @@ export default class PlayerBehavior extends cc.Component {
         this.canClock = true;
         this.idleStatus();
 
-        cc.log("Get Amature.");
         let nameList = this.amatureDisplay.getArmatureNames();
-        cc.log(" ---------- " + nameList.length);
         nameList.forEach(elem=> {
-            cc.log("\n Name:   " + elem.toString());
+            //cc.log("\n Name:   " + elem.toString());
         });
     }
 
@@ -70,7 +68,7 @@ export default class PlayerBehavior extends cc.Component {
         if(this.idling)
             return;
         this.idling = true;
-        cc.log("Idle   Anim Name is:  " + this.animName);
+        //cc.log("Idle   Anim Name is:  " + this.animName);
         switch(this.animName)
         {
             case "Front":
@@ -106,7 +104,7 @@ export default class PlayerBehavior extends cc.Component {
         //if(this.running)
         //    return;
         this.running = true;
-        cc.log("Run     Anim Name is:  " + this.animName);
+        //cc.log("Run     Anim Name is:  " + this.animName);
         switch(this.animName)
         {
             case "Front":
@@ -136,7 +134,7 @@ export default class PlayerBehavior extends cc.Component {
                 } else if(!isRight)
                 {
                     {
-                        cc.log("Chay qua trai.");
+                        //cc.log("Chay qua trai.");
                         this.amatureSide.display.setRotationY(0);
                     }
                 }
@@ -178,10 +176,10 @@ export default class PlayerBehavior extends cc.Component {
 
     private onAnimationEvent(event: cc.Event.EventCustom) {
         let eventObj: dragonBones.EventObject = event.detail;
-        cc.log("ANIM event: " + event.type + " anim: " + event.detail.animationState.name);
+        //cc.log("ANIM event: " + event.type + " anim: " + event.detail.animationState.name);
         if(event.type === dragonBones.EventObject.COMPLETE) {
             if(eventObj.animationState.name === 'pound') {
-                cc.log("co vao day ko Bay LLLLLLLLLLLLLLLLLLLLLLLL");
+                //cc.log("co vao day ko Bay LLLLLLLLLLLLLLLLLLLLLLLL");
                 this.setAnimName("Front");
                 this.amature.display.setVisible(true);
                 this.amatureBack.display.setVisible(false);

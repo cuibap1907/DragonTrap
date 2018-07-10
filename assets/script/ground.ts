@@ -50,7 +50,6 @@ export default class Ground extends cc.Component {
         this.node.y += this.groundSpeed * dt;
         if(this.outOfScreen())
         {
-            cc.log("Auto detroyed.");
             this.node.destroy();
         }
     }

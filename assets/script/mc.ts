@@ -13,6 +13,12 @@ const {ccclass, property} = cc._decorator;
 import PlayerBehavior from "./player-behavior"
 import GameMessage   from './game-messages'
 import EventManager from './event-manager'
+import Global from './global'
+
+export enum SWIPE_SIDE {
+    UP_LEFT     =   1,
+    UP_RIGHT    =   2
+}
 
 const MOVE_LEFT     =   1;
 const MOVE_RIGHT    =   2;
@@ -34,11 +40,25 @@ export default class CharacterControll extends cc.Component {
     rightKey: any = cc.KEY.right;
 
     private behavior: PlayerBehavior = null;
+    body: cc.RigidBody;
+    jumpSpeed: number = 500;
+    _jumps: number = 2;
 
     onLoad () {
         EventManager.instance.register(GameMessage.CHARACTER_MOVE_ON_BY_TOUCH, this.onTouchControl, this);
         EventManager.instance.register(GameMessage.CHARACTER_MOVE_OFF_BY_TOUCH, this.offTouchControl, this);
+        EventManager.instance.register(GameMessage.CHARACTER_MOVE_SWIPE_BY_TOUCH, this.onSwipeControl, this);
+        EventManager.instance.register(GameMessage.CONTACT_ENABLE_JUMP, this.enableCanJumpOnGround, this);
+        EventManager.instance.register(GameMessage.CONTACT_DISABLE_JUMP, this.disableCanJumpOnGround, this);
+
+
+        cc.eventManager.addListener({
+            event: cc.EventListener.KEYBOARD,
+            onKeyPressed: this.onKeyPressed.bind(this),
+            onKeyReleased: this.onKeyReleased.bind(this),
+        }, this.node);
         this.behavior = this.node.getComponent("player-behavior");
+        this.body = this.getComponent(cc.RigidBody);
     }
 
     start () {
@@ -62,12 +82,36 @@ export default class CharacterControll extends cc.Component {
         this._moveFlags = -1;
     }
 
+    onSwipeControl(side: SWIPE_SIDE)
+    {
+        switch(side)
+        {
+            case SWIPE_SIDE.UP_LEFT:
+            {
+                let rigid = this.node.getComponent(cc.RigidBody);
+                rigid.linearVelocity = cc.v2(0, 400);
+                //rigid.angularVelocity = 45;
+                rigid.fixedRotation = true;
+                break;
+            }
+
+            case SWIPE_SIDE.UP_RIGHT:
+            {
+                let rigid = this.node.getComponent(cc.RigidBody);
+                rigid.linearVelocity = cc.v2(0, 400);
+                //rigid.angularVelocity = 45;
+                rigid.fixedRotation = true;
+                break;
+            }
+        }
+    }
+
 
     onTouchControl(newDir: cc.Vec2, moveTo: cc.Vec2, keyCode: number = -1)
     {
         //cc.log("Called touch controll.");
         this.currentKeyCode = keyCode;
-        if(this.useKeyboard)
+        if(Global.instance.useKeyboard)
         {
             this.limitPos = moveTo;
             switch(keyCode)
@@ -96,7 +140,7 @@ export default class CharacterControll extends cc.Component {
 
     offTouchControl()
     {
-        if(this.useKeyboard)
+        if(Global.instance.useKeyboard)
         {
             switch(this.currentKeyCode)
             {
@@ -122,10 +166,90 @@ export default class CharacterControll extends cc.Component {
         this.mcIdleState();
     }
 
+    _jump: boolean = false;
+    _upPressed: boolean = false;
+
+    canJumpOnGround: boolean = true;
+
+    enableCanJumpOnGround()
+    {
+        this.canJumpOnGround = true;
+    }
+
+    disableCanJumpOnGround()
+    {
+        this.canJumpOnGround = false;
+    }
+
     onKeyPressed(keyCode, event) {
+        switch(keyCode)
+        {
+            case cc.KEY.a:
+            case cc.KEY.left:
+            {
+                this._moveFlags |= MOVE_LEFT;
+                this.mcRunState(false);
+                break;
+            }
+
+            case cc.KEY.d:
+            case cc.KEY.right:
+            {
+                this._moveFlags |= MOVE_RIGHT;
+                this.mcRunState(true);
+                break;
+            }
+
+            case cc.KEY.w:
+            case cc.KEY.up:
+            {
+                if(!this._upPressed && this.canJumpOnGround)
+                    this._jump = true;
+                this._upPressed = true;
+                break;
+            }
+
+            case cc.KEY.s:
+            case cc.KEY.down:
+            {
+                this._moveFlags |= MOVE_DOWN;
+                break;
+            }
+        }
     }
 
     onKeyReleased(keyCode, event) {
+        switch(keyCode)
+        {
+            case cc.KEY.a:
+            case cc.KEY.left:
+            {
+                this._moveFlags &= ~MOVE_LEFT;
+                break;
+            }
+
+            case cc.KEY.d:
+            case cc.KEY.right:
+            {
+                this._moveFlags &= ~MOVE_RIGHT;
+                break;
+            }
+
+            case cc.KEY.w:
+            case cc.KEY.up:
+            {
+                this._upPressed = false;
+                break;
+            }
+
+            case cc.KEY.s:
+            case cc.KEY.down:
+            {
+                this._moveFlags &= ~MOVE_DOWN;
+                break;
+            }
+        }
+        this.mcIdleState();
     }
 
     onCollisionEnter(other) {
@@ -139,7 +263,6 @@ export default class CharacterControll extends cc.Component {
 
     moveDir: cc.Vec2;
     currentKeyCode: number = -1;
-    useKeyboard: boolean = true;
     moveOffX: number = 0.0;
     moveOffY: number = 0.0;
     limitPos: cc.Vec2;
@@ -151,6 +274,7 @@ export default class CharacterControll extends cc.Component {
     }
 
     update (dt) {
+        var speed = this.body.linearVelocity;
         if(this.node.y < -560)
         {
             //cc.log("GAME OVER.");
@@ -161,7 +285,7 @@ export default class CharacterControll extends cc.Component {
         if(delta > MAX_SPEED)
             delta = MAX_SPEED;
         
-        if(this.useKeyboard)
+        if(Global.instance.useKeyboard)
         {
             if(this._moveFlags == MOVE_LEFT)
             {
@@ -190,6 +314,18 @@ export default class CharacterControll extends cc.Component {
                 // }
             }
 
+            if(Math.abs(speed.y) < 50) {
+                this._jumps   = 2;
+            }
+
+            if (this._jump && this._jumps > 0) {
+                speed.y = this.jumpSpeed;
+                this._jumps --;
+            }
+            this._jump = false;
+            
+            this.body.linearVelocity = speed;
+
         } else {
             if (this.moveDir  && !this.canStopMovingMC())
             {
@@ -212,6 +348,23 @@ export default class CharacterControll extends cc.Component {
             } 
         }
 
+    }
+
+    onEndContact (contact, selfCollider, otherCollider) 
+    {
+        cc.log(" End Contact : " + otherCollider.body.node.name);
+        this.disableCanJumpOnGround();
+    }
+
+    onBeginContact (contact, selfCollider, otherCollider) {
+
+        // if(otherCollider.body.node.name == "player")
+        // {
+        //     Global.instance.player.updateScore();
+        //     this.node.destroy();
+        // }
+        cc.log(" Begin Contact: " + otherCollider.body.node.name);
+        this.enableCanJumpOnGround();
     }
 
     canStopMovingMC(): boolean

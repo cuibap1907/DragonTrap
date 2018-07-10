@@ -30,9 +30,13 @@ export default class Ground extends cc.Component {
         type: cc.Integer,
         tooltip: "time display of auto hide ground"
     })
-    displayTime: number = 3;
+    displayTime: number = 5;
 
     groundSpeed: number = 60;
+
+    startTime: number = 7;
+    timeToHide: number = 0;
+
 
     onLoad () 
     {
@@ -40,7 +44,8 @@ export default class Ground extends cc.Component {
     }
 
     start () {
-
+        if(this.groundType == GROUNDTYPE.ICE_GROUND)
+            this.timeToHide = this.startTime - cc.director.getDeltaTime();
     }
 
     outOfScreen(): boolean
@@ -50,10 +55,39 @@ export default class Ground extends cc.Component {
         return false;
     }
 
+    enableHL()
+    {
+        this.node.getChildByName("highlight").active = true;
+    }
+
+    disableHL()
+    {
+        this.node.getChildByName("highlight").active = false;
+    }
+
+    displayHL: boolean = false;
     update (dt) {
         if(Global.instance.isGameOver)
             return;
-            
+
+        if(this.groundType == GROUNDTYPE.ICE_GROUND)
+        {
+            this.timeToHide = this.timeToHide - cc.director.getDeltaTime();
+            if(this.timeToHide < 0.01)
+            {
+                this.node.getChildByName("highlight").stopAllActions();
+                this.node.destroy();
+            }
+
+            if(this.timeToHide < 4 && !this.displayHL)
+            {
+                this.displayHL = true;
+                let actionBlink = cc.blink(20, 15);
+                this.node.getChildByName("highlight").active = true;
+                this.node.getChildByName("highlight").runAction(cc.repeatForever(actionBlink));
+            }
+        }
+        
         this.node.y += this.groundSpeed * dt;
         if(this.outOfScreen())
         {

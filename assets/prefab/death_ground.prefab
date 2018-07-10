@@ -10,7 +10,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "autohide_ground",
+    "_name": "death_ground",
     "_objFlags": 0,
     "_parent": null,
     "_children": [],
@@ -78,7 +78,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "2be02895-4edf-4b17-9f52-7d670f864824"
+      "__uuid__": "25a2c70f-43ca-4c5e-950b-e3a9fdf19058"
     },
     "_type": 0,
     "_sizeMode": 0,

@@ -369,7 +369,13 @@ export default class CharacterControll extends cc.Component {
         //     Global.instance.player.updateScore();
         //     this.node.destroy();
         // }
-        cc.log(" Begin Contact: " + otherCollider.body.node.name);
+        let groundName = otherCollider.body.node.name;
+        cc.log(" Begin Contact: " + groundName);
+        if(groundName == "death_ground")
+        {
+            EventManager.instance.dispatch(GameMessage.GAME_OVER_STATE);
+            return;
+        }
         this.enableCanJumpOnGround();
     }
 

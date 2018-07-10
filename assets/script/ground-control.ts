@@ -89,6 +89,14 @@ export default class GroundControl extends cc.Component {
             line3Node.setPosition(this.spawnGroundNode[2].getPosition());
             this.node.addChild(line3Node);
         }
+
+        if(this.stepGround == this.GROUND_DATA.length - 1)
+        {
+            this.stepGround = -1;
+            this.schedule(()=>{
+                this.spawnGroundStep();
+            }, 3.0, this.GROUND_DATA.length - 1);
+        }
     }
 
     start () {

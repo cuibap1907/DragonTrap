@@ -33,7 +33,10 @@ export default class Ground extends cc.Component {
 
     groundSpeed: number = 60;
 
-    onLoad () {}
+    onLoad () 
+    {
+                
+    }
 
     start () {
 

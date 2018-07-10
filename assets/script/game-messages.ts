@@ -12,5 +12,7 @@ export default class GameMessage {
     static CHARACTER_MOVE_SWIPE_BY_TOUCH  =   "character_move_swipe_by_touch";
 
     static CONTACT_ENABLE_JUMP  =   "contact_enable_jump";
-    static CONTACT_DISABLE_JUMP  =   "contact_disable_jump";    
+    static CONTACT_DISABLE_JUMP  =   "contact_disable_jump";  
+    
+    static GAME_OVER_STATE    =   "game_over_state";
 }

@@ -38,12 +38,28 @@ export default class Monster extends cc.Component {
 
     spawnNewWeapon()
     {
+        let numberWeaponRand: number = Math.floor((cc.rand() % 100) + 0);
+        let numberWeapon: number = 1;
+        if(numberWeaponRand < 50)
+            numberWeapon = 2;
+        
         let weaponID: number = Math.floor((cc.rand() % 4) + 0);
         cc.log(" -------------- Id Weapon: " + weaponID);
         let newWeapon: cc.Node = cc.instantiate(this.weaponDataList[weaponID]);
         let rigid = newWeapon.getComponent(cc.RigidBody);
         rigid.linearVelocity = cc.v2(15, 100);
         this.node.getChildByName("weapon_spawn").addChild(newWeapon);
+
+
+        if(numberWeapon > 1)
+        {
+            let weaponID2: number = Math.floor((cc.rand() % 4) + 0);
+            cc.log(" -------------- Id Weapon: " + weaponID2);
+            let newWeapon2: cc.Node = cc.instantiate(this.weaponDataList[weaponID2]);
+            let rigid = newWeapon2.getComponent(cc.RigidBody);
+            rigid.linearVelocity = cc.v2(-150, 100);
+            this.node.getChildByName("weapon_spawn").addChild(newWeapon2);
+        }
     }
 
     update (dt) {

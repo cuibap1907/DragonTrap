@@ -67,7 +67,7 @@
     "_localZOrder": 0,
     "_globalZOrder": 0,
     "_opacityModifyRGB": false,
-    "groupIndex": 0
+    "groupIndex": 5
   },
   {
     "__type__": "cc.Sprite",
@@ -158,7 +158,7 @@
       "__id__": 1
     },
     "asset": {
-      "__id__": 0
+      "__uuid__": "663e844d-a1e1-471f-9977-f9213272f718"
     },
     "fileId": "64pJRhe9pEJIdIA9mXXDNs",
     "sync": false

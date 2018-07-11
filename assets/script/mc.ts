@@ -33,7 +33,7 @@ export default class CharacterControll extends cc.Component {
         tooltip: "speed of Main Character."
     })
     speed: number = 50;
-
+    
     _moveFlags: number = 0;
 
     leftKey: any = cc.KEY.left;
@@ -43,6 +43,10 @@ export default class CharacterControll extends cc.Component {
     body: cc.RigidBody;
     jumpSpeed: number = 500;
     _jumps: number = 2;
+
+    currentHP: number = 100;
+
+    private hpProgress: cc.ProgressBar = null;
 
     onLoad () {
         EventManager.instance.register(GameMessage.CHARACTER_MOVE_ON_BY_TOUCH, this.onTouchControl, this);
@@ -59,6 +63,8 @@ export default class CharacterControll extends cc.Component {
         }, this.node);
         this.behavior = this.node.getComponent("player-behavior");
         this.body = this.getComponent(cc.RigidBody);
+
+        this.node.getChildByName("progress_bar").getComponent(cc.ProgressBar).progress = 1.0;
     }
 
     start () {
@@ -358,8 +364,18 @@ export default class CharacterControll extends cc.Component {
 
     onEndContact (contact, selfCollider, otherCollider) 
     {
-        cc.log(" End Contact : " + otherCollider.body.node.name);
+        //cc.log(" End Contact : " + otherCollider.body.node.name);
         this.disableCanJumpOnGround();
+    }
+
+    updateHPBar()
+    {
+        this.node.getChildByName("progress_bar").getComponent(cc.ProgressBar).progress = this.currentHP/100;
+        if(this.currentHP == 0)
+        {
+            EventManager.instance.dispatch(GameMessage.GAME_OVER_STATE);
+            return;
+        }
     }
 
     onBeginContact (contact, selfCollider, otherCollider) {
@@ -370,11 +386,19 @@ export default class CharacterControll extends cc.Component {
         //     this.node.destroy();
         // }
         let groundName = otherCollider.body.node.name;
-        cc.log(" Begin Contact: " + groundName);
-        if(groundName == "death_ground")
+        //cc.log(" Begin Contact: " + groundName);
+        if(groundName == "death_ground" || groundName == "monster")
         {
             EventManager.instance.dispatch(GameMessage.GAME_OVER_STATE);
             return;
+        } else if(groundName == "blade_1" ||
+                  groundName == "blade_2" ||
+                  groundName == "blade_3" ||
+                  groundName == "swinging_blade")
+        {
+            otherCollider.body.node.destroy();
+            this.currentHP -= 25;
+            this.updateHPBar();
         }
         this.enableCanJumpOnGround();
     }

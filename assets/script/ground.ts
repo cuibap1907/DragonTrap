@@ -32,8 +32,6 @@ export default class Ground extends cc.Component {
     })
     displayTime: number = 5;
 
-    groundSpeed: number = 60;
-
     startTime: number = 7;
     timeToHide: number = 0;
 
@@ -88,7 +86,7 @@ export default class Ground extends cc.Component {
             }
         }
         
-        this.node.y += this.groundSpeed * dt;
+        this.node.y += Global.instance.groundSpeed * dt;
         if(this.outOfScreen())
         {
             this.node.destroy();

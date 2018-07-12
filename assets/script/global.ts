@@ -24,6 +24,7 @@ export default class Global extends cc.Component {
 
     useKeyboard: boolean = true;
     isGameOver: boolean = false;
+    groundSpeed: number = 60;
 
 
     onLoad () {

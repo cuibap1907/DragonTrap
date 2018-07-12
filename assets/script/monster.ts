@@ -44,7 +44,6 @@ export default class Monster extends cc.Component {
             numberWeapon = 2;
         
         let weaponID: number = Math.floor((cc.rand() % 4) + 0);
-        cc.log(" -------------- Id Weapon: " + weaponID);
         let newWeapon: cc.Node = cc.instantiate(this.weaponDataList[weaponID]);
         let rigid = newWeapon.getComponent(cc.RigidBody);
         rigid.linearVelocity = cc.v2(15, 100);
@@ -54,7 +53,6 @@ export default class Monster extends cc.Component {
         if(numberWeapon > 1)
         {
             let weaponID2: number = Math.floor((cc.rand() % 4) + 0);
-            cc.log(" -------------- Id Weapon: " + weaponID2);
             let newWeapon2: cc.Node = cc.instantiate(this.weaponDataList[weaponID2]);
             let rigid = newWeapon2.getComponent(cc.RigidBody);
             rigid.linearVelocity = cc.v2(-150, 100);

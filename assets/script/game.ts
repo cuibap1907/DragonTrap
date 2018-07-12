@@ -41,6 +41,8 @@ export default class Game extends cc.Component {
     endTouch: cc.Vec2;
 
     onMCTouched: boolean = false;
+
+    gameTime: number = 0;
     
     onLoad () {
         cc.director.getPhysicsManager().enabled = true;
@@ -51,6 +53,7 @@ export default class Game extends cc.Component {
         this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
         EventManager.instance.register(GameMessage.GAME_OVER_STATE, this.onGameOver, this);
         Global.instance.isGameOver = false;
+        Global.instance.groundSpeed = 60;
     }
 
     onGameOver()
@@ -141,7 +144,14 @@ export default class Game extends cc.Component {
 
     }
 
-    update (dt) {}
+    update (dt) {
+        this.gameTime += dt;
+        if(this.gameTime > 15 && Global.instance.groundSpeed < 160)
+        {
+            this.gameTime = 0;
+            Global.instance.groundSpeed = Global.instance.groundSpeed + 30;
+        }
+    }
 
     onPauseGame()
     {
